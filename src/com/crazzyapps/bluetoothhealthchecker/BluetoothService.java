@@ -43,6 +43,25 @@ public class BluetoothService extends IntentService {
 		}
 	}
 
+	// private final void createNotification(){
+	// final NotificationManager mNotification = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+	//
+	// final Intent launchNotifiactionIntent = new Intent(this, BluetoothService.class);
+	// final PendingIntent pendingIntent = PendingIntent.getActivity(this,
+	// REQUEST_CODE, launchNotifiactionIntent,
+	// PendingIntent.FLAG_ONE_SHOT);
+	//
+	// Notification.Builder builder = new Notification.Builder(this)
+	// .setWhen(System.currentTimeMillis())
+	// .setTicker(notificationTitle)
+	// .setSmallIcon(R.drawable.notification)
+	// .setContentTitle(getResources().getString(R.string.notification_title))
+	// .setContentText(getResources().getString(R.string.notification_desc))
+	// .setContentIntent(pendingIntent);
+	//
+	// mNotification.notify(NOTIFICATION_ID, builder.build());
+	// }
+
 	private void trace(String message) {
 
 		System.out.println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx " + message);

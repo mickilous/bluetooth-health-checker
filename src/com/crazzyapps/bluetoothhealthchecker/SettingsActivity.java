@@ -13,15 +13,28 @@ import android.widget.Button;
 
 public class SettingsActivity extends Activity {
 
-	PendingIntent	pintent;
+	PendingIntent	btServicePIntent;
+	AlarmManager	alarm;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.settings);
 
+		defineIntents();
+		defineSystemServices();
+
 		defineStartButton();
 		defineStopButton();
+	}
+
+	private void defineSystemServices() {
+		alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+	}
+
+	private void defineIntents() {
+		Intent btServiceIntent = new Intent(SettingsActivity.this, BluetoothService.class);
+		btServicePIntent = PendingIntent.getService(SettingsActivity.this, 1, btServiceIntent, 0);
 	}
 
 	private void defineStartButton() {
@@ -29,12 +42,9 @@ public class SettingsActivity extends Activity {
 		((Button) findViewById(R.id.button_start)).setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
-				Intent intent = new Intent(SettingsActivity.this, BluetoothService.class);
-				pintent = PendingIntent.getService(SettingsActivity.this, 1, intent, 0);
 
-				AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 				// Start every 5 seconds
-				alarm.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 5 * 1000, pintent);
+				alarm.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 5 * 1000, btServicePIntent);
 			}
 
 		});
@@ -45,9 +55,7 @@ public class SettingsActivity extends Activity {
 
 			public void onClick(View v) {
 
-				AlarmManager alarm = (AlarmManager) getSystemService(ALARM_SERVICE);
-
-				alarm.cancel(pintent);
+				alarm.cancel(btServicePIntent);
 			}
 
 		});
