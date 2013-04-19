@@ -11,7 +11,9 @@ import android.support.v4.app.TaskStackBuilder;
 
 public class BluetoothService extends IntentService {
 
-	private static final int	NOTIF_OK	= 0;
+	private static final int			NOTIFICATION	= 0;
+	private NotificationCompat.Builder	notifBuilder;
+	private NotificationManager			notificationManager;
 
 	public BluetoothService() {
 		super("BluetoothService");
@@ -26,6 +28,7 @@ public class BluetoothService extends IntentService {
 	@Override
 	public void onCreate() {
 		trace("Creating Service");
+		defineNotification();
 		super.onCreate();
 	}
 
@@ -41,20 +44,39 @@ public class BluetoothService extends IntentService {
 		if (mBluetoothAdapter == null) {
 			trace("Device does not support Bluetooth");
 		} else if (!mBluetoothAdapter.isEnabled()) {
-			createNotification();
+			// createNotification();
 			trace("Testing Bluetooth Health");
-			boolean result = mBluetoothAdapter.enable();
-			trace("Enabling result : " + result);
+			boolean status = mBluetoothAdapter.enable();
+			trace("Enabling result : " + status);
+			notifyBluetoothStatus(status);
 			mBluetoothAdapter.disable();
 		} else {
 			trace("Bluetooth is Enable -> No test");
 		}
 	}
 
-	private final void createNotification() {
-		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this).setSmallIcon(R.drawable.ic_launcher)
+	private void notifyBluetoothStatus(boolean status) {
+		if (status)
+			notifyHealthy();
+		else
+			notifySick();
+
+	}
+
+	private void notifyHealthy() {
+		notifBuilder.setContentText("Ca marche toujours bien");
+		notificationManager.notify(NOTIFICATION, notifBuilder.build());
+	}
+
+	private void notifySick() {
+		notifBuilder.setContentText("C'est cassé !!!!!").setSmallIcon(R.drawable.notif_ko);
+		notificationManager.notify(NOTIFICATION, notifBuilder.build());
+	}
+
+	private void defineNotification() {
+		notifBuilder = new NotificationCompat.Builder(this).setSmallIcon(R.drawable.ic_launcher)
 				.setContentTitle(getResources().getString(R.string.notification_title))
-				.setContentText(getResources().getString(R.string.notification_desc));
+				.setContentText(getResources().getString(R.string.notification_desc)).setAutoCancel(true);
 
 		// Creates an explicit intent for an Activity in your app
 		Intent resultIntent = new Intent(this, SettingsActivity.class);
@@ -70,24 +92,12 @@ public class BluetoothService extends IntentService {
 		stackBuilder.addNextIntent(resultIntent);
 		PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 
-		mBuilder.setContentIntent(resultPendingIntent);
+		notifBuilder.setContentIntent(resultPendingIntent);
 
-		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		// mId allows you to update the notification later on.
-		mNotificationManager.notify(NOTIF_OK, mBuilder.build());
+		notificationManager.notify(NOTIFICATION, notifBuilder.build());
 
-		// final NotificationManager mNotification = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-		//
-		// final Intent launchNotifiactionIntent = new Intent(this, BluetoothService.class);
-		// final PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, launchNotifiactionIntent,
-		// PendingIntent.FLAG_ONE_SHOT);
-		//
-		// Notification.Builder builder = new Notification.Builder(this).setWhen(System.currentTimeMillis())
-		// .setTicker(getResources().getString(R.string.notification_title)).setSmallIcon(R.drawable.ic_launcher)
-		// .setContentTitle(getResources().getString(R.string.notification_title))
-		// .setContentText(getResources().getString(R.string.notification_desc)).setContentIntent(pendingIntent);
-		//
-		// mNotification.notify(NOTIFICATION_ID, builder.build());
 	}
 
 	private void trace(String message) {
