@@ -34,7 +34,7 @@ public class SettingsActivity extends Activity {
 
 	private void defineIntents() {
 		Intent btServiceIntent = new Intent(SettingsActivity.this, BluetoothService.class);
-		btServicePIntent = PendingIntent.getService(SettingsActivity.this, 1, btServiceIntent, 0);
+		btServicePIntent = PendingIntent.getService(SettingsActivity.this, 0, btServiceIntent, 0);
 	}
 
 	private void defineStartButton() {

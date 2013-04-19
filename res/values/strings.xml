@@ -6,5 +6,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="start">Start</string>
     <string name="stop">Stop</string>
+    <string name="notification_title">Bluetooth Health Checker</string>
+    <string name="notification_desc">Ca marche bien dis donc !!!</string>
 
 </resources>
