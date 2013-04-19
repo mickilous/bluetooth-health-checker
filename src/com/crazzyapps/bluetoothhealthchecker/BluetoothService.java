@@ -1,6 +1,7 @@
 package com.crazzyapps.bluetoothhealthchecker;
 
 import android.app.IntentService;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 
 public class BluetoothService extends IntentService {
@@ -29,6 +30,17 @@ public class BluetoothService extends IntentService {
 
 	private void testBluettooth() {
 		trace("Testing Bluetooth");
+		BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+		if (mBluetoothAdapter == null) {
+			trace("Device does not support Bluetooth");
+		} else if (!mBluetoothAdapter.isEnabled()) {
+			trace("Testing Bluetooth Health");
+			boolean result = mBluetoothAdapter.enable();
+			trace("Enabling result : " + result);
+			mBluetoothAdapter.disable();
+		} else {
+			trace("Bluetooth is Enable -> No test");
+		}
 	}
 
 	private void trace(String message) {
