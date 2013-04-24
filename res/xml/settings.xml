@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory android:title="@string/category_set_general" >
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="service_enabled"
+            android:summary="@string/set_service_enabled_summary"
+            android:title="@string/set_service_enabled" >
+        </CheckBoxPreference>
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="run_at_startup"
+            android:summary="@string/set_run_at_startup_summary"
+            android:title="@string/set_run_at_startup" >
+        </CheckBoxPreference>
+        <EditTextPreference
+            android:defaultValue="30"
+            android:key="time_interval"
+            android:summary="@string/set_time_interval_summary"
+            android:title="@string/set_time_interval" >
+        </EditTextPreference>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/category_set_notifications" >
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="notif_when_healthy"
+            android:summary="@string/set_notif_when_healthy_summary"
+            android:title="@string/set_notif_when_healthy" >
+        </CheckBoxPreference>
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="vibrate_when_ko"
+            android:summary="@string/set_vibrate_when_ko_summary"
+            android:title="@string/set_vibrate_when_ko" >
+        </CheckBoxPreference>
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="sound_when_ko"
+            android:summary="@string/set_sound_when_ko_summary"
+            android:title="@string/set_sound_when_ko" >
+        </CheckBoxPreference>
+        <RingtonePreference
+            android:dependency="sound_when_ko"
+            android:key="ringtone_when_ko"
+            android:summary="@string/set_ringtone_when_ko_summary"
+            android:title="@string/set_ringtone_when_ko" >
+        </RingtonePreference>
+    </PreferenceCategory>
+
+</PreferenceScreen>

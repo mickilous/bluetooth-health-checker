@@ -1,12 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- Main -->
     <string name="app_name">Bluetooth Health Checker</string>
-    <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="action_main">Settings</string>
     <string name="start">Start</string>
     <string name="stop">Stop</string>
+    <!-- Notifications -->
     <string name="notification_title">Bluetooth Health Checker</string>
     <string name="notification_desc">Ca marche bien dis donc !!!</string>
+    <!-- Settings -->
+    <string name="title_activity_settings">Settings</string>
+    <string name="action_settings">Settings</string>
+    <string name="category_set_general">General</string>
+    <string name="set_service_enabled_summary">Start or Stop the service</string>
+    <string name="set_service_enabled">Enabled</string>
+    <string name="set_run_at_startup_summary">Launch the application when the device has finished to boot</string>
+    <string name="set_run_at_startup">Run at startup</string>
+    <string name="set_time_interval_summary">Specify the time interval (in minutes) between 2 bluetooth health checking</string>
+    <string name="set_time_interval">Time Interval</string>
+    <string name="category_set_notifications">Notifications</string>
+    <string name="set_notif_when_healthy_summary">Display an icon in the notification bar when application is running</string>
+    <string name="set_notif_when_healthy">Display notification icon</string>
+    <string name="set_vibrate_when_ko_summary">Vibrate when the bluetooth is not healthy any more</string>
+    <string name="set_vibrate_when_ko">Vibrate on KO</string>
+    <string name="set_sound_when_ko_summary">Sound when the bluetooth is not healthy any more</string>
+    <string name="set_sound_when_ko">Sound on KO</string>
+    <string name="set_ringtone_when_ko_summary">Select ringtone when the bluetooth is not healthy any more</string>
+    <string name="set_ringtone_when_ko">Ringtone</string>
 
 </resources>
