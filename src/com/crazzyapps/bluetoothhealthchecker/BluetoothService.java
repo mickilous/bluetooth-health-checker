@@ -6,14 +6,21 @@ import android.app.PendingIntent;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
+import android.os.SystemClock;
+import android.os.Vibrator;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationCompat.Builder;
 import android.support.v4.app.TaskStackBuilder;
 
 public class BluetoothService extends IntentService {
 
-	private static final int			NOTIFICATION	= 0;
-	private NotificationCompat.Builder	notifBuilder;
-	private NotificationManager			notificationManager;
+	private static final int	NOTIFICATION	= 0;
+	private SharedPreferences	preferences;
 
 	public BluetoothService() {
 		super("BluetoothService");
@@ -28,7 +35,9 @@ public class BluetoothService extends IntentService {
 	@Override
 	public void onCreate() {
 		trace("Creating Service");
-		defineNotification();
+
+		preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
 		super.onCreate();
 	}
 
@@ -40,18 +49,25 @@ public class BluetoothService extends IntentService {
 
 	private void testBluettooth() {
 		trace("Testing Bluetooth");
-		BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-		if (mBluetoothAdapter == null) {
+		BluetoothAdapter bluetooth = BluetoothAdapter.getDefaultAdapter();
+		if (bluetooth == null) {
 			trace("Device does not support Bluetooth");
-		} else if (!mBluetoothAdapter.isEnabled()) {
+			notifyBluetoothUnsupported();
+		} else if (!bluetooth.isEnabled()) {
 			// createNotification();
 			trace("Testing Bluetooth Health");
-			boolean status = mBluetoothAdapter.enable();
-			trace("Enabling result : " + status);
+			bluetooth.enable();
+			SystemClock.sleep(1000);
+
+			boolean status = bluetooth.isEnabled();
+			trace("Enabled : " + status);
+
+			bluetooth.disable();
 			notifyBluetoothStatus(status);
-			mBluetoothAdapter.disable();
+
 		} else {
 			trace("Bluetooth is Enable -> No test");
+			notifyBluetoothStatus(true);
 		}
 	}
 
@@ -63,41 +79,55 @@ public class BluetoothService extends IntentService {
 
 	}
 
+	private Builder defineNotification() {
+
+		TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+		stackBuilder.addParentStack(SettingsActivity.class);
+		stackBuilder.addNextIntent(new Intent(this, SettingsActivity.class));
+		PendingIntent pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+
+		Builder notifBuilder = new NotificationCompat.Builder(this)
+				.setContentTitle(getResources().getString(R.string.app_name)).setAutoCancel(true)
+				.setContentIntent(pendingIntent);
+
+		return notifBuilder;
+	}
+
 	private void notifyHealthy() {
-		notifBuilder.setContentText("Ca marche toujours bien");
-		notificationManager.notify(NOTIFICATION, notifBuilder.build());
+		if (preferences.getBoolean(C.prefs.NOTIF_WHEN_HEALTHY, false)) {
+			notify(R.string.notification_ok, R.drawable.ic_launcher, NotificationCompat.PRIORITY_DEFAULT);
+		}
 	}
 
 	private void notifySick() {
-		notifBuilder.setContentText("C'est cassé !!!!!").setSmallIcon(R.drawable.notif_ko);
-		notificationManager.notify(NOTIFICATION, notifBuilder.build());
+		notify(R.string.notification_ko, R.drawable.notif_ko, NotificationCompat.PRIORITY_MAX);
+		if (preferences.getBoolean(C.prefs.VIBRATE_WHEN_KO, false))
+			vibrate();
+		if (preferences.getBoolean(C.prefs.SOUND_WHEN_KO, false))
+			sound();
 	}
 
-	private void defineNotification() {
-		notifBuilder = new NotificationCompat.Builder(this).setSmallIcon(R.drawable.ic_launcher)
-				.setContentTitle(getResources().getString(R.string.notification_title))
-				.setContentText(getResources().getString(R.string.notification_desc)).setAutoCancel(true);
+	private void notifyBluetoothUnsupported() {
+		notify(R.string.notification_notsuppored, R.drawable.notif_ko, NotificationCompat.PRIORITY_HIGH);
+	}
 
-		// Creates an explicit intent for an Activity in your app
-		Intent resultIntent = new Intent(this, MainActivity.class);
+	private void notify(int contentText, int smallIcon, int priority) {
+		Builder notifBuilder = defineNotification();
+		notifBuilder.setContentText(getResources().getString(contentText)).setSmallIcon(smallIcon)
+				.setPriority(priority);
+		((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).notify(NOTIFICATION,
+				notifBuilder.build());
+	}
 
-		// The stack builder object will contain an artificial back stack for the
-		// started Activity.
-		// This ensures that navigating backward from the Activity leads out of
-		// your application to the Home screen.
-		TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-		// Adds the back stack for the Intent (but not the Intent itself)
-		stackBuilder.addParentStack(MainActivity.class);
-		// Adds the Intent that starts the Activity to the top of the stack
-		stackBuilder.addNextIntent(resultIntent);
-		PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+	private void vibrate() {
+		Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+		vibrator.vibrate(100);
+	}
 
-		notifBuilder.setContentIntent(resultPendingIntent);
-
-		notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		// mId allows you to update the notification later on.
-		notificationManager.notify(NOTIFICATION, notifBuilder.build());
-
+	private void sound() {
+		Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+		Ringtone ringtoneManager = RingtoneManager.getRingtone(getApplicationContext(), notification);
+		ringtoneManager.play();
 	}
 
 	private void trace(String message) {

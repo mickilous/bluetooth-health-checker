@@ -14,9 +14,8 @@ import android.widget.Button;
 
 public class MainActivity extends Activity {
 
-	private static final int	CODE_RETOUR	= 0;
-	PendingIntent				btServicePIntent;
-	AlarmManager				alarm;
+	PendingIntent	btServicePIntent;
+	AlarmManager	alarm;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +72,7 @@ public class MainActivity extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		if (item.getItemId() == R.id.action_main) {
-			startActivityForResult(new Intent(this, SettingsActivity.class), CODE_RETOUR);
+			startActivityForResult(new Intent(this, SettingsActivity.class), 0);
 		}
 		return super.onOptionsItemSelected(item);
 	}
