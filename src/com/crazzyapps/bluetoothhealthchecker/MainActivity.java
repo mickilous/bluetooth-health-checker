@@ -1,9 +1,6 @@
 package com.crazzyapps.bluetoothhealthchecker;
 
 import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -14,28 +11,17 @@ import android.widget.Button;
 
 public class MainActivity extends Activity {
 
-	PendingIntent	btServicePIntent;
-	AlarmManager	alarm;
+	private BluetoothServiceRunner	serviceRunner;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 
-		defineIntents();
-		defineSystemServices();
+		serviceRunner = new BluetoothServiceRunner(this);
 
 		defineStartButton();
 		defineStopButton();
-	}
-
-	private void defineSystemServices() {
-		alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-	}
-
-	private void defineIntents() {
-		Intent btServiceIntent = new Intent(MainActivity.this, BluetoothService.class);
-		btServicePIntent = PendingIntent.getService(MainActivity.this, 0, btServiceIntent, 0);
 	}
 
 	private void defineStartButton() {
@@ -43,9 +29,7 @@ public class MainActivity extends Activity {
 		((Button) findViewById(R.id.button_start)).setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
-
-				// Start every 5 seconds
-				alarm.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 5 * 1000, btServicePIntent);
+				serviceRunner.start();
 			}
 
 		});
@@ -55,8 +39,7 @@ public class MainActivity extends Activity {
 		((Button) findViewById(R.id.button_stop)).setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
-
-				alarm.cancel(btServicePIntent);
+				serviceRunner.stop();
 			}
 
 		});

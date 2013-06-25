@@ -53,7 +53,7 @@ public class BluetoothService extends IntentService {
 		if (bluetooth == null) {
 			trace("Device does not support Bluetooth");
 			notifyBluetoothUnsupported();
-		} else if (!bluetooth.isEnabled()) {
+		} else if (!bluetooth.isEnabled() && BluetoothAdapter.STATE_OFF == bluetooth.getState()) {
 			// createNotification();
 			trace("Testing Bluetooth Health");
 			bluetooth.enable();
@@ -86,21 +86,20 @@ public class BluetoothService extends IntentService {
 		stackBuilder.addNextIntent(new Intent(this, SettingsActivity.class));
 		PendingIntent pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 
-		Builder notifBuilder = new NotificationCompat.Builder(this)
-				.setContentTitle(getResources().getString(R.string.app_name)).setAutoCancel(true)
-				.setContentIntent(pendingIntent);
+		Builder notifBuilder = new NotificationCompat.Builder(this).setContentTitle(
+				getResources().getString(R.string.app_name)).setContentIntent(pendingIntent);
 
 		return notifBuilder;
 	}
 
 	private void notifyHealthy() {
 		if (preferences.getBoolean(C.prefs.NOTIF_WHEN_HEALTHY, false)) {
-			notify(R.string.notification_ok, R.drawable.ic_launcher, NotificationCompat.PRIORITY_DEFAULT);
+			notify(R.string.notification_ok, R.drawable.notif_ok, NotificationCompat.PRIORITY_DEFAULT, true);
 		}
 	}
 
 	private void notifySick() {
-		notify(R.string.notification_ko, R.drawable.notif_ko, NotificationCompat.PRIORITY_MAX);
+		notify(R.string.notification_ko, R.drawable.notif_ko, NotificationCompat.PRIORITY_MAX, true);
 		if (preferences.getBoolean(C.prefs.VIBRATE_WHEN_KO, false))
 			vibrate();
 		if (preferences.getBoolean(C.prefs.SOUND_WHEN_KO, false))
@@ -108,13 +107,13 @@ public class BluetoothService extends IntentService {
 	}
 
 	private void notifyBluetoothUnsupported() {
-		notify(R.string.notification_notsuppored, R.drawable.notif_ko, NotificationCompat.PRIORITY_HIGH);
+		notify(R.string.notification_notsuppored, R.drawable.notif_ko, NotificationCompat.PRIORITY_HIGH, true);
 	}
 
-	private void notify(int contentText, int smallIcon, int priority) {
+	private void notify(int contentText, int smallIcon, int priority, boolean autoCancel) {
 		Builder notifBuilder = defineNotification();
 		notifBuilder.setContentText(getResources().getString(contentText)).setSmallIcon(smallIcon)
-				.setPriority(priority);
+				.setPriority(priority).setAutoCancel(autoCancel);
 		((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).notify(NOTIFICATION,
 				notifBuilder.build());
 	}
