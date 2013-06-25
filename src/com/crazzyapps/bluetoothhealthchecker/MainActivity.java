@@ -11,14 +11,14 @@ import android.widget.Button;
 
 public class MainActivity extends Activity {
 
-	private BluetoothServiceRunner	serviceRunner;
+	private BluetoothServiceRunner	btService;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 
-		serviceRunner = new BluetoothServiceRunner(this);
+		btService = new BluetoothServiceRunner(this);
 
 		defineStartButton();
 		defineStopButton();
@@ -29,7 +29,7 @@ public class MainActivity extends Activity {
 		((Button) findViewById(R.id.button_start)).setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
-				serviceRunner.start();
+				btService.start();
 			}
 
 		});
@@ -39,7 +39,7 @@ public class MainActivity extends Activity {
 		((Button) findViewById(R.id.button_stop)).setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
-				serviceRunner.stop();
+				btService.stop();
 			}
 
 		});
