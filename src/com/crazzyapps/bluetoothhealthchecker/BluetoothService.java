@@ -11,7 +11,6 @@ public class BluetoothService extends IntentService {
 
 	public BluetoothService() {
 		super("BluetoothService");
-		notifier = new NotifManager(this);
 	}
 
 	@Override
@@ -23,6 +22,7 @@ public class BluetoothService extends IntentService {
 	@Override
 	public void onCreate() {
 		trace("Creating Service");
+		notifier = new NotifManager(this);
 		super.onCreate();
 	}
 

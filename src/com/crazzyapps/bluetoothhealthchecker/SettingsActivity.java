@@ -1,9 +1,5 @@
 package com.crazzyapps.bluetoothhealthchecker;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
@@ -12,9 +8,8 @@ import android.widget.Toast;
 
 public class SettingsActivity extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-	PendingIntent				btServicePIntent;
-	AlarmManager				alarm;
-	private SharedPreferences	preferences;
+	private BluetoothServiceRunner	btService;
+	private SharedPreferences		preferences;
 
 	@SuppressWarnings("deprecation")
 	@Override
@@ -22,11 +17,10 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
 		super.onCreate(savedInstanceState);
 		addPreferencesFromResource(R.xml.settings);
 
+		btService = new BluetoothServiceRunner(this);
+
 		preferences = PreferenceManager.getDefaultSharedPreferences(this);
 		preferences.registerOnSharedPreferenceChangeListener(this);
-
-		defineIntents();
-		defineSystemServices();
 
 	}
 
@@ -34,15 +28,6 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
 	protected void onDestroy() {
 		super.onDestroy();
 		PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(this);
-	}
-
-	private void defineIntents() {
-		Intent btServiceIntent = new Intent(this, BluetoothService.class);
-		btServicePIntent = PendingIntent.getService(this, 0, btServiceIntent, 0);
-	}
-
-	private void defineSystemServices() {
-		alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 	}
 
 	@Override
@@ -72,13 +57,9 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
 
 	private void enableService(boolean enabled) {
 		if (enabled)
-			alarm.setRepeating(
-					AlarmManager.RTC_WAKEUP,
-					System.currentTimeMillis(),
-					Integer.parseInt(preferences.getString(C.prefs.TIME_INTERVAL, C.prefs.TIME_INTERVAL_DEFAULT)) * 1000,
-					btServicePIntent);
+			btService.start();
 		else
-			alarm.cancel(btServicePIntent);
+			btService.stop();
 
 	}
 
