@@ -14,16 +14,16 @@ public class BluetoothService extends IntentService {
 	}
 
 	@Override
-	protected void onHandleIntent(Intent intent) {
-		trace("Starting Service");
-		testBluettooth();
-	}
-
-	@Override
 	public void onCreate() {
 		trace("Creating Service");
 		notifier = new NotifManager(this);
 		super.onCreate();
+	}
+
+	@Override
+	protected void onHandleIntent(Intent intent) {
+		trace("Starting Service");
+		testBluettooth();
 	}
 
 	@Override

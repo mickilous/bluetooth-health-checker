@@ -34,25 +34,15 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
 	public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
 		if (C.prefs.SERVICE_ENABLED.equals(key))
 			enableService(prefs.getBoolean(key, false));
-		if (C.prefs.RUN_AT_STARTUP.equals(key))
-			runServiceAtStartup(prefs.getBoolean(key, true));
 		if (C.prefs.TIME_INTERVAL.equals(key))
-			changeTimeInterval(Integer.parseInt(prefs.getString(key, C.prefs.TIME_INTERVAL_DEFAULT)));
+			changeTimeInterval();
 
 	}
 
-	private void changeTimeInterval(int interval) {
+	private void changeTimeInterval() {
 		toast("TODO MODIFY IN MINUTES INSTEAD OF SECONDS");
-		restartService();
-	}
-
-	private void restartService() {
-		enableService(false);
-		enableService(true);
-	}
-
-	private void runServiceAtStartup(boolean boolean1) {
-		toast("TODO IMPLEMENT RUN SERVICE @ STARTUP");
+		if (btService.isRunning())
+			btService.restart();
 	}
 
 	private void enableService(boolean enabled) {
