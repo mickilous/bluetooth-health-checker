@@ -5,24 +5,25 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
+
+import com.google.inject.Inject;
 
 public class BluetoothServiceRunner {
 
-	private SharedPreferences	preferences;
-	private PendingIntent		btServicePIntent;
-	private AlarmManager		alarm;
+	@Inject
+	SharedPreferences		preferences;
 
-	private boolean				running	= false;
+	@Inject
+	private AlarmManager	alarm;
 
+	private PendingIntent	btServicePIntent;
+
+	private boolean			running	= false;
+
+	@Inject
 	public BluetoothServiceRunner(Context context) {
-
-		preferences = PreferenceManager.getDefaultSharedPreferences(context);
-
 		Intent btServiceIntent = new Intent(context, BluetoothService.class);
 		btServicePIntent = PendingIntent.getService(context, 0, btServiceIntent, 0);
-
-		alarm = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 	}
 
 	public void start() {

@@ -9,21 +9,24 @@ import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Vibrator;
-import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationCompat.Builder;
 import android.support.v4.app.TaskStackBuilder;
+
+import com.google.inject.Inject;
 
 public class NotifManager {
 
 	private static final int	NOTIFICATION	= 0;
 
-	private Context				context;
-	private SharedPreferences	preferences;
+	@Inject
+	SharedPreferences			preferences;
 
+	private Context				context;
+
+	@Inject
 	public NotifManager(Context context) {
 		this.context = context;
-		preferences = PreferenceManager.getDefaultSharedPreferences(context);
 		defineNotification();
 	}
 
@@ -62,7 +65,7 @@ public class NotifManager {
 
 	private void vibrate() {
 		Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-		vibrator.vibrate(100);
+		vibrator.vibrate(1000);
 	}
 
 	private void sound() {

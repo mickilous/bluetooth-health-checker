@@ -1,25 +1,26 @@
 package com.crazzyapps.bluetoothhealthchecker;
 
+import roboguice.activity.RoboPreferenceActivity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceActivity;
-import android.preference.PreferenceManager;
 import android.widget.Toast;
 
-public class SettingsActivity extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
+import com.google.inject.Inject;
 
-	private BluetoothServiceRunner	btService;
-	private SharedPreferences		preferences;
+public class SettingsActivity extends RoboPreferenceActivity implements
+		SharedPreferences.OnSharedPreferenceChangeListener {
 
-	@SuppressWarnings("deprecation")
+	@Inject
+	BluetoothServiceRunner	btService;
+	@Inject
+	SharedPreferences		preferences;
+
 	@Override
+	@SuppressWarnings("deprecation")
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		addPreferencesFromResource(R.xml.settings);
 
-		btService = new BluetoothServiceRunner(this);
-
-		preferences = PreferenceManager.getDefaultSharedPreferences(this);
 		preferences.registerOnSharedPreferenceChangeListener(this);
 
 	}
@@ -27,7 +28,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(this);
+		preferences.unregisterOnSharedPreferenceChangeListener(this);
 	}
 
 	@Override
@@ -54,7 +55,6 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
 	}
 
 	private void toast(String message) {
-
 		Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
 	}
 

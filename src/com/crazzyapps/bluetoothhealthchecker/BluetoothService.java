@@ -1,13 +1,16 @@
 package com.crazzyapps.bluetoothhealthchecker;
 
-import android.app.IntentService;
+import roboguice.service.RoboIntentService;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.os.SystemClock;
 
-public class BluetoothService extends IntentService {
+import com.google.inject.Inject;
 
-	private NotifManager	notifier;
+public class BluetoothService extends RoboIntentService {
+
+	@Inject
+	NotifManager	notifier;
 
 	public BluetoothService() {
 		super("BluetoothService");
@@ -16,7 +19,6 @@ public class BluetoothService extends IntentService {
 	@Override
 	public void onCreate() {
 		trace("Creating Service");
-		notifier = new NotifManager(this);
 		super.onCreate();
 	}
 
