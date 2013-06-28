@@ -1,10 +1,11 @@
-package com.crazzyapps.bluetoothhealthchecker;
+package com.crazzyapps.bluetoothhealthchecker.service;
 
 import roboguice.service.RoboIntentService;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.os.SystemClock;
 
+import com.crazzyapps.bluetoothhealthchecker.manager.NotifManager;
 import com.google.inject.Inject;
 
 public class BluetoothService extends RoboIntentService {

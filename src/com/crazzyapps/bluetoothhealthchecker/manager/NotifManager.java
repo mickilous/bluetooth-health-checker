@@ -1,4 +1,4 @@
-package com.crazzyapps.bluetoothhealthchecker;
+package com.crazzyapps.bluetoothhealthchecker.manager;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -13,6 +13,12 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationCompat.Builder;
 import android.support.v4.app.TaskStackBuilder;
 
+import com.crazzyapps.bluetoothhealthchecker.C;
+import com.crazzyapps.bluetoothhealthchecker.R;
+import com.crazzyapps.bluetoothhealthchecker.C.prefs;
+import com.crazzyapps.bluetoothhealthchecker.R.drawable;
+import com.crazzyapps.bluetoothhealthchecker.R.string;
+import com.crazzyapps.bluetoothhealthchecker.activity.SettingsActivity;
 import com.google.inject.Inject;
 
 public class NotifManager {

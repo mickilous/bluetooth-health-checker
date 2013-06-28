@@ -1,4 +1,4 @@
-package com.crazzyapps.bluetoothhealthchecker;
+package com.crazzyapps.bluetoothhealthchecker.service;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
+import com.crazzyapps.bluetoothhealthchecker.C;
+import com.crazzyapps.bluetoothhealthchecker.C.prefs;
 import com.google.inject.Inject;
 
 public class BluetoothServiceRunner {
